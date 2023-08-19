@@ -1,0 +1,14 @@
+.tableContainer {
+  width: 1500px;
+}
+
+.scrollableTable {
+  max-height: 700px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.scrollTable {
+  width: 100%;
+  table-layout: fixed; 
+}
