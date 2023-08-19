@@ -4,3 +4,9 @@ body {
     font-family: Arial, sans-serif;
     background-color: #E7EAEF;
 }
+
+button {
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}

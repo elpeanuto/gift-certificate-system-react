@@ -1,4 +1,4 @@
-import request from "../request";
+import { request, requestWithToken } from "../request";
 
 const getToken = async (body) => {
   const url = "gift-certificate-system/auth/authenticate";
@@ -21,7 +21,7 @@ const getRefreshedToken = async (jwt) => {
     },
   };
 
-  return request(url, options);
+  return requestWithToken(url, options);
 };
 
 export { getToken, getRefreshedToken };

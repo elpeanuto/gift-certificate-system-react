@@ -1,4 +1,4 @@
-import request from "../request";
+import { requestWithToken } from "../request";
 
 const getCertificates = async (page, limit, jwt) => {
   const url = `gift-certificate-system/giftCertificates?page=${page}&limit=${limit}`;
@@ -9,7 +9,7 @@ const getCertificates = async (page, limit, jwt) => {
     },
   };
 
-  return request(url, options);
+  return requestWithToken(url, options);
 };
 
 const addCertificate = async (certificate, jwt) => {
@@ -24,7 +24,7 @@ const addCertificate = async (certificate, jwt) => {
   };
 
   try {
-    await request(url, options);
+    await requestWithToken(url, options);
   } catch (error) {
     throw error;
   }

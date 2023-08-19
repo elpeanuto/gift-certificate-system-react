@@ -4,6 +4,7 @@ import styles from "./styles/header.module.css";
 import AddNew from "./components/AddNew";
 import jwt_decode from "jwt-decode";
 import { getAccessToken, setToken } from "../util/jwt";
+import global from "../../assets/global.css"
 
 const Header = () => {
   const location = useLocation();

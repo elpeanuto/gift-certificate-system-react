@@ -1,14 +1,19 @@
-.tableContainer {
-  width: 1500px;
+.certificatesContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  padding-top: 80px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5),
+
 }
 
-.scrollableTable {
-  max-height: 700px;
+.tableContainer {
+  width: 100%;
+  max-height: 720px;
+  overflow-x: auto;
+  margin-top: 20px;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-.scrollTable {
-  width: 100%;
-  table-layout: fixed; 
-}

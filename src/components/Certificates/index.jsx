@@ -8,7 +8,8 @@ import ReactPaginate from "react-paginate";
 import { Helmet } from "react-helmet";
 import ViewModal from "./components/ViewModal";
 import EditModal from "./components/EditModal";
-import { getAccessToken, getRefreshToken } from "../util/jwt";
+import { getAccessToken } from "../util/jwt";
+import styles from "./styles/certificates.module.css";
 
 const Certificates = () => {
   const [giftCertificates, setGiftCertificates] = useState([]);
@@ -80,14 +81,14 @@ const Certificates = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Certificates</title>
-      </Helmet>
+      <div className={styles.certificatesContainer}>
+        <Helmet>
+          <title>Certificates</title>
+        </Helmet>
 
-      <LimitDropdown limit={limit} setLimit={setLimit} />
+        <LimitDropdown limit={limit} setLimit={setLimit} />
 
-      <div >
-        <div>
+        <div className={styles.tableContainer}>
           <Table bordered striped hover>
             <thead>
               <tr>
@@ -164,46 +165,46 @@ const Certificates = () => {
             </tbody>
           </Table>
         </div>
-      </div>
 
-      {showViewModal && selectedCertificate && (
-        <ViewModal
-          certificate={selectedCertificate}
-          handleClose={handleCloseViewModal}
+        {showViewModal && selectedCertificate && (
+          <ViewModal
+            certificate={selectedCertificate}
+            handleClose={handleCloseViewModal}
+          />
+        )}
+
+        {showEditModal && selectedCertificate && (
+          <EditModal
+            certificate={selectedCertificate}
+            handleClose={handleCloseEditModal}
+          />
+        )}
+
+        {/* Delete Modal */}
+        <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
+          {/* .. (Delete Modal content) */}
+        </Modal>
+        </div>
+
+        <ReactPaginate
+          previousLabel={"<"}
+          nextLabel={">"}
+          breakLabel={"..."}
+          pageCount={totalPages}
+          marginPagesDisplayed={2}
+          pageRangeDisplayed={3}
+          onPageChange={handlePageClick}
+          containerClassName={"pagination justify-content-center"}
+          pageClassName={"page-item"}
+          pageLinkClassName={"page-link"}
+          previousClassName={"page-item"}
+          previousLinkClassName={"page-link"}
+          nextClassName={"page-item"}
+          nextLinkClassName={"page-link"}
+          breakClassName={"page-item"}
+          breakLinkClassName={"page-link"}
+          activeClassName={"active"}
         />
-      )}
-
-      {showEditModal && selectedCertificate && (
-        <EditModal
-          certificate={selectedCertificate}
-          handleClose={handleCloseEditModal}
-        />
-      )}
-
-      {/* Delete Modal */}
-      <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
-        {/* .. (Delete Modal content) */}
-      </Modal>
-
-      <ReactPaginate
-        previousLabel={"<"}
-        nextLabel={">"}
-        breakLabel={"..."}
-        pageCount={totalPages}
-        marginPagesDisplayed={2}
-        pageRangeDisplayed={3}
-        onPageChange={handlePageClick}
-        containerClassName={"pagination justify-content-center"}
-        pageClassName={"page-item"}
-        pageLinkClassName={"page-link"}
-        previousClassName={"page-item"}
-        previousLinkClassName={"page-link"}
-        nextClassName={"page-item"}
-        nextLinkClassName={"page-link"}
-        breakClassName={"page-item"}
-        breakLinkClassName={"page-link"}
-        activeClassName={"active"}
-      />
     </>
   );
 };

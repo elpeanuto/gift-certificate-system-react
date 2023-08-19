@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Button, Form, Container } from "react-bootstrap";
@@ -7,6 +7,8 @@ import { setToken } from "../util/jwt";
 import { getToken } from "../api/jwt/api";
 
 const Login = () => {
+  const [error, setError] = useState(null); 
+
   const validationSchema = Yup.object({
     username: Yup.string()
       .required("Username is required")
@@ -32,12 +34,11 @@ const Login = () => {
 
       try {
         const jwtData = await getToken(body);
-        console.log(jwtData);
         setToken(jwtData);
 
         window.location.href = "/certificates";
       } catch (error) {
-        window.alert(error.message);
+        setError(error.message); 
       }
     },
   });
@@ -97,6 +98,9 @@ const Login = () => {
               </Button>
             </div>
           </Form>
+      {error && ( 
+        <div className="text-danger text-center mt-2">{error}</div>
+      )}
         </Container>
       </div>
     </React.Fragment>
