@@ -1,14 +1,12 @@
+import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import useLocalState from "../util/useLocalStateHook";
-import styles from "./styles/login.module.css";
-import "../../assets/global.css";
+import { Button, Form, Container } from "react-bootstrap";
 import { Helmet } from "react-helmet";
-import { getToken } from "../util/api";
+import { setToken } from "../util/jwt";
+import { getToken } from "../api/jwt/api";
 
 const Login = () => {
-  const [jwt, setJwt] = useLocalState("", "jwt");
-
   const validationSchema = Yup.object({
     username: Yup.string()
       .required("Username is required")
@@ -34,9 +32,10 @@ const Login = () => {
 
       try {
         const jwtData = await getToken(body);
+        console.log(jwtData);
+        setToken(jwtData);
 
         window.location.href = "/certificates";
-        setJwt(jwtData);
       } catch (error) {
         window.alert(error.message);
       }
@@ -44,48 +43,63 @@ const Login = () => {
   });
 
   return (
-    <>
+    <React.Fragment>
       <Helmet>
         <title>Login</title>
       </Helmet>
 
-      <div className={styles.container}>
-        <h1>Login</h1>
-        <form onSubmit={formik.handleSubmit}>
-          <div className={styles.inputGroup}>
-            <div className={styles.formGroup}>
-              <label htmlFor="username">Username:</label>
-              <input
+      <div
+        className="d-flex justify-content-center align-items-center min-vh-100"
+        style={{
+          backgroundColor: "#E7EAEF",
+        }}
+      >
+        <Container
+          className="p-4 border rounded"
+          style={{
+            width: "350px",
+            padding: "20px",
+            borderRadius: "8px",
+            boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+            backgroundColor: "#fff",
+          }}
+        >
+          <h1 className="text-center mb-4">Login</h1>
+          <Form onSubmit={formik.handleSubmit}>
+            <Form.Group controlId="username" style={{ marginBottom: "10px" }}>
+              <Form.Label>Username:</Form.Label>
+              <Form.Control
                 type="email"
-                id="username"
-                name="username"
                 {...formik.getFieldProps("username")}
               />
               {formik.touched.username && formik.errors.username && (
-                <div className={styles.error}>{formik.errors.username}</div>
+                <div className="text-danger">{formik.errors.username}</div>
               )}
-            </div>
-            <div className={styles.formGroup}>
-              <label htmlFor="password">Password:</label>
-              <input
+            </Form.Group>
+            <Form.Group controlId="password" style={{ marginBottom: "20px" }}>
+              <Form.Label>Password:</Form.Label>
+              <Form.Control
                 type="password"
-                id="password"
-                name="password"
                 {...formik.getFieldProps("password")}
               />
               {formik.touched.password && formik.errors.password && (
-                <div className={styles.error}>{formik.errors.password}</div>
+                <div className="text-danger">{formik.errors.password}</div>
               )}
+            </Form.Group>
+            <div className="text-center">
+              <Button
+                id="submit"
+                type="submit"
+                variant="primary"
+                style={{ width: "100%", padding: "10px" }}
+              >
+                Login
+              </Button>
             </div>
-          </div>
-          <div className={styles.buttonContainer}>
-            <button id="submit" type="submit">
-              Login
-            </button>
-          </div>
-        </form>
+          </Form>
+        </Container>
       </div>
-    </>
+    </React.Fragment>
   );
 };
 

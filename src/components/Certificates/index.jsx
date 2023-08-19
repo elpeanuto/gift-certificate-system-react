@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import { Button, Col, Modal, Row, ButtonGroup } from "react-bootstrap";
-import { getCertificates } from "../util/api";
-import styles from "./styles/certificates.module.css";
+import { getCertificates } from "../api/certificates/api";
 import LimitDropdown from "./components/LimitDropDown";
 import { format } from "date-fns";
 import ReactPaginate from "react-paginate";
 import { Helmet } from "react-helmet";
 import ViewModal from "./components/ViewModal";
 import EditModal from "./components/EditModal";
-import { getAccessesToken, getRefreshToken } from "../util/jwt";
+import { getAccessToken, getRefreshToken } from "../util/jwt";
 
 const Certificates = () => {
   const [giftCertificates, setGiftCertificates] = useState([]);
@@ -45,7 +44,7 @@ const Certificates = () => {
 
   const fetchCertificates = async (page, limit) => {
     try {
-      const data = await getCertificates(page, limit, getAccessesToken());
+      const data = await getCertificates(page, limit, getAccessToken());
       setGiftCertificates(data.giftCertificates.content);
       setTotalObj(data.total);
     } catch (error) {
@@ -87,8 +86,8 @@ const Certificates = () => {
 
       <LimitDropdown limit={limit} setLimit={setLimit} />
 
-      <div className={styles.tableContainer}>
-        <div className={styles.scrollableTable}>
+      <div >
+        <div>
           <Table bordered striped hover>
             <thead>
               <tr>
@@ -183,13 +182,8 @@ const Certificates = () => {
 
       {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
-        {/* ... (Delete Modal content) */}
+        {/* .. (Delete Modal content) */}
       </Modal>
-
-          <button onClick={() => console.log(getAccessesToken())}>1</button>
-          <button onClick={() => console.log(getRefreshToken())}>2</button>
-          <button onClick={() => console.log()}>3</button>
-
 
       <ReactPaginate
         previousLabel={"<"}

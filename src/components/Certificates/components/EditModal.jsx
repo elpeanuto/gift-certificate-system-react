@@ -36,7 +36,7 @@
 
 //     const jwt = localStorage.getItem("jwt");
 
-//     const isSuccess = addCertificate(newProduct, JSON.parse(jwt).accessesToken);
+//     const isSuccess = addCertificate(newProduct, JSON.parse(jwt)Token);
 //     if (isSuccess) {
 //       handleClose();
 //     } else {

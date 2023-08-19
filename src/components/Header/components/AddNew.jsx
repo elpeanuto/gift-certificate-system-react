@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button, Modal, Form, Col, Badge, Alert } from "react-bootstrap";
 import styles from "../styles/header.module.css";
-import { addCertificate } from "../../util/api";
+import { addCertificate } from "../../api/certificates/api";
+import { getAccessToken } from "../../util/jwt";
 
 const AddNew = () => {
   const [show, setShow] = useState(false);
@@ -34,9 +35,8 @@ const AddNew = () => {
       tags: formattedTags,
     };
 
-    const jwt = localStorage.getItem("jwt");
-
-    const isSuccess = addCertificate(newProduct, JSON.parse(jwt).accessesToken);
+    const isSuccess = addCertificate(newProduct, getAccessToken());
+    console.log("isSucc" + isSuccess);
     if (isSuccess) {
       handleClose();
     } else {

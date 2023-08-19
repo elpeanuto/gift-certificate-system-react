@@ -1,9 +1,9 @@
 import React from "react";
-import useLocalState from "../util/useLocalStateHook";
 import { Navigate } from "react-router-dom";
+import { getAccessToken } from "../util/jwt";
 
 const PrivateRoute = ({ children }) => {
-  const [jwt, setJwt] = useLocalState("", "jwt");
+  const jwt = getAccessToken();
   return jwt ? children : <Navigate to="/login" />;
 };
 

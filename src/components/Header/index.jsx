@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import styles from "./styles/header.module.css";
 import AddNew from "./components/AddNew";
-import useLocalState from "../util/useLocalStateHook";
 import jwt_decode from "jwt-decode";
+import { getAccessToken, setToken } from "../util/jwt";
 
 const Header = () => {
   const location = useLocation();
   const showButtons = location.pathname === "/certificates";
-  const [jwt, setJwt] = useLocalState("", "jwt");
   const [email, setEmail] = useState("");
 
   useEffect(() => {
-    const token = localStorage.getItem("jwt");
     if (showButtons) {
+      const token = getAccessToken();
       const decoded = jwt_decode(token);
       setEmail(decoded.sub);
     }
@@ -30,7 +29,7 @@ const Header = () => {
             <button
               className={styles.button}
               onClick={() => {
-                setJwt(null);
+                setToken(null);
                 window.location.href = "login";
               }}
             >
