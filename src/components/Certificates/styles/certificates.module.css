@@ -1,16 +1,12 @@
 .certificatesContainer {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 20px;
   padding-top: 80px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5),
-
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5),
 }
 
 .tableContainer {
   width: 100%;
-  max-height: 720px;
+  max-height: 690px;
   overflow-x: auto;
   margin-top: 20px;
   overflow-y: auto;

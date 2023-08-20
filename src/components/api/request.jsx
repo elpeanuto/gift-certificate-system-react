@@ -37,7 +37,7 @@ const requestWithToken = async (url, options, refreshAttempts = 0) => {
         throw new Error("Maximum token refresh attempts reached.");
       }
     } else {
-      throw new Error(data.errorMessage);
+      throw new Error("Error during requestWithToken: " + data.errorMessage);
     }
   } catch (error) {
     throw error;

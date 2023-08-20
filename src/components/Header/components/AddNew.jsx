@@ -36,7 +36,7 @@ const AddNew = () => {
     };
 
     const isSuccess = addCertificate(newProduct, getAccessToken());
-    console.log("isSucc" + isSuccess);
+
     if (isSuccess) {
       handleClose();
     } else {

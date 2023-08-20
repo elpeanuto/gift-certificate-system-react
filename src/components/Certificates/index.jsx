@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
-import { Button, Col, Row, ButtonGroup } from "react-bootstrap";
-import { getCertificates } from "../api/certificates/api";
+import { Button, Col, Row, Form, ButtonGroup } from "react-bootstrap";
+import {
+  getCertificates,
+  getCertificatesWithFilter,
+} from "../api/certificates/api";
 import LimitDropdown from "./components/LimitDropDown";
 import { format } from "date-fns";
 import ReactPaginate from "react-paginate";
@@ -11,6 +14,7 @@ import EditModal from "./components/EditModal";
 import { getAccessToken } from "../util/jwt";
 import styles from "./styles/certificates.module.css";
 import DeleteModal from "./components/DeleteModal";
+import queryString from "query-string";
 
 const Certificates = () => {
   const [giftCertificates, setGiftCertificates] = useState([]);
@@ -22,6 +26,9 @@ const Certificates = () => {
   const [totalObj, setTotalObj] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchDone, setSearchDone] = useState("");
+  const [error, setError] = useState(false);
 
   const handleShowViewModal = (certificate) => {
     setSelectedCertificate(certificate);
@@ -38,35 +45,68 @@ const Certificates = () => {
     setShowDeleteModal(true);
   };
 
+  const handleSearch = async () => {
+    setSearchDone(true);
+    const searchQueryParts = searchQuery.split(" ");
+    const { keywords, tags } = searchQueryParts.reduce(
+      (result, part) => {
+        if (part.startsWith("#(")) {
+          result.tags.push(part.substring(2).replace(")", ""));
+        } else {
+          result.keywords.push(part);
+        }
+        return result;
+      },
+      { keywords: [], tags: [] }
+    );
+
+    const queryParams = [];
+    if (keywords.length > 0) {
+      queryParams.push(`partOfNameDescription=${keywords.join(" ")}`);
+    }
+    tags.forEach((tag) => {
+      queryParams.push(`tags=${tag}`);
+    });
+
+    const urlWithParams = `gift-certificate-system/giftCertificates/search?${queryParams.join(
+      "&"
+    )}`;
+
+    try {
+      const data = await getCertificatesWithFilter(
+        urlWithParams,
+        currentPage,
+        limit
+      );
+
+      setGiftCertificates(data.giftCertificates.content);
+      setTotalObj(data.total);
+      setTotalPages(Math.ceil(data.total / limit));
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   const fetchCertificates = async (page, limit) => {
     try {
       const data = await getCertificates(page, limit, getAccessToken());
       setGiftCertificates(data.giftCertificates.content);
       setTotalObj(data.total);
+      setTotalPages(Math.ceil(data.total / limit));
     } catch (error) {
-      window.alert(error.message);
+      setError(error.message);
     }
   };
-
-  useEffect(() => {
-    fetchCertificates(0, limit);
-    setTotalPages(Math.ceil(totalObj / limit));
-  }, []);
-
-  useEffect(() => {
-    setCurrentPage(0);
-    fetchCertificates(0, limit);
-    setTotalPages(Math.ceil(totalObj / limit));
-  }, [limit, totalObj, totalPages]);
-
-  useEffect(() => {
-    fetchCertificates(currentPage, limit);
-  }, [currentPage]);
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected;
     setCurrentPage(selectedPage);
   };
+
+  useEffect(() => {
+    if (!searchDone) fetchCertificates(currentPage, limit);
+    else handleSearch();
+  }, [currentPage, limit]);
 
   return (
     <>
@@ -76,6 +116,21 @@ const Certificates = () => {
         </Helmet>
 
         <LimitDropdown limit={limit} setLimit={setLimit} />
+        <Form.Group controlId="searchForm" className="mb-2">
+          <div className="d-flex justify-content-between align-items-center">
+            <Form.Control
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <Button variant="primary" onClick={handleSearch}>
+              Search
+            </Button>
+          </div>
+        </Form.Group>
+
+        {error && <div className="text-danger text-center mt-2">{error}</div>}
 
         <div className={styles.tableContainer}>
           <Table bordered striped hover>

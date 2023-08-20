@@ -1,15 +1,16 @@
-import { requestWithToken } from "../request";
+import { request, requestWithToken } from "../request";
 
-const getCertificates = async (page, limit, jwt) => {
+const getCertificates = async (page, limit) => {
   const url = `gift-certificate-system/giftCertificates?page=${page}&limit=${limit}`;
-  const options = {
-    headers: {
-      "Content-Type": "application/json",
-      Authentication: `Bearer ${jwt}`,
-    },
-  };
 
-  return requestWithToken(url, options);
+  return request(url, null);
+};
+
+const getCertificatesWithFilter = async (url, page, limit) => {
+  console.log(url);
+  const updatedUrl = `${url}&page=${page}&limit=${limit}`;
+
+  return request(updatedUrl, null);
 };
 
 const addCertificate = async (certificate, jwt) => {
@@ -49,4 +50,28 @@ const deleteCertificate = async (deleteLink, jwt) => {
   }
 };
 
-export { getCertificates, addCertificate, deleteCertificate };
+const updateCertificate = async (certificate, updateLink, jwt) => {
+  const modifiedUpdateLink = updateLink.replace("http://localhost:8080/", "");
+  const options = {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${jwt}`,
+    },
+    body: JSON.stringify(certificate),
+  };
+
+  try {
+    await requestWithToken(modifiedUpdateLink, options);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export {
+  getCertificates,
+  addCertificate,
+  deleteCertificate,
+  updateCertificate,
+  getCertificatesWithFilter,
+};

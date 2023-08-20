@@ -1,25 +1,56 @@
 import React, { useState } from "react";
-import { Modal, Button, Form, Badge } from "react-bootstrap";
+import { Modal, Button, Form, Badge, Alert } from "react-bootstrap";
 import styles from "../../Header/styles/header.module.css";
+import { updateCertificate } from "../../api/certificates/api";
+import { getAccessToken } from "../../util/jwt";
 
 const EditModal = ({ certificate, handleClose }) => {
-  const [show, setShow] = useState(false);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [duration, setDuration] = useState("");
-  const [tags, setTags] = useState([]);
+  const [name, setName] = useState(certificate.name);
+  const [description, setDescription] = useState(certificate.description);
+  const [price, setPrice] = useState(certificate.price);
+  const [duration, setDuration] = useState(certificate.duration);
+  const [tags, setTags] = useState(certificate.tags.map((tag) => tag.name));
   const [newTag, setNewTag] = useState("");
   const [error, setError] = useState("");
-  // Add other states for the fields you want to edit
+
   const removeTag = (tag) => {
     const updatedTags = tags.filter((t) => t !== tag);
     setTags(updatedTags);
   };
+
+  const addTag = () => {
+    if (newTag.trim() !== "" && newTag.length >= 3 && newTag.length <= 15) {
+      setTags([...tags, newTag]);
+      setNewTag("");
+      setError("");
+    } else {
+      setError("Tag name must be between 3 and 15 characters.");
+    }
+  };
+
   const handleSave = () => {
-    // Implement your save logic here using API calls or state management
-    // You can use the updated state values to send the edited data to the server
-    // After saving, close the modal using handleClose()
+    const formattedTags = tags.map((tag) => ({ name: tag }));
+    const newProduct = {
+      name,
+      description,
+      price: parseFloat(price),
+      duration: parseInt(duration, 10),
+      tags: formattedTags,
+    };
+
+    const updateLink = certificate.links.find(
+        (link) => link.rel === "update"
+      ).href;
+
+    console.log(newProduct);
+
+    const isSuccess = updateCertificate(newProduct, updateLink, getAccessToken());
+
+    if (isSuccess) {
+      handleClose();
+    } else {
+      setError("An error occurred while adding the certificate.");
+    }
   };
 
   return (
@@ -28,13 +59,14 @@ const EditModal = ({ certificate, handleClose }) => {
         <Modal.Title>Edit Certificate</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {error && <Alert variant="danger">{error}</Alert>}
         <Form>
           <Form.Group controlId="formName" className="mb-2">
             <Form.Label className={styles.bold}>Name:</Form.Label>
             <Form.Control
               type="text"
               placeholder="Enter name"
-              value={certificate.name}
+              value={name}
               onChange={(e) => setName(e.target.value)}
             />
           </Form.Group>
@@ -43,7 +75,7 @@ const EditModal = ({ certificate, handleClose }) => {
             <Form.Control
               as="textarea"
               placeholder="Enter description"
-              value={description}
+              value={certificate.description}
               onChange={(e) => setDescription(e.target.value)}
               rows={5}
             />
@@ -75,7 +107,7 @@ const EditModal = ({ certificate, handleClose }) => {
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
               />
-              <Button variant="primary" onClick={() => ""} className="ml-2">
+              <Button variant="primary" onClick={addTag} className="ml-2">
                 Add Tag
               </Button>
             </div>
