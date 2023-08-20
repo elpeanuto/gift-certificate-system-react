@@ -30,4 +30,23 @@ const addCertificate = async (certificate, jwt) => {
   }
 };
 
-export { getCertificates, addCertificate };
+const deleteCertificate = async (deleteLink, jwt) => {
+  const modifiedDeleteUrl = deleteLink.replace("http://localhost:8080/", "");
+
+  const options = {
+    method: "DELETE",
+
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${jwt}`,
+    },
+  };
+
+  try {
+    await requestWithToken(modifiedDeleteUrl, options);
+  } catch (error) {
+    throw error;
+  }
+};
+
+export { getCertificates, addCertificate, deleteCertificate };

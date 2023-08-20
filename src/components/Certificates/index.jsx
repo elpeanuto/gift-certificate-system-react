@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
-import { Button, Col, Modal, Row, ButtonGroup } from "react-bootstrap";
+import { Button, Col, Row, ButtonGroup } from "react-bootstrap";
 import { getCertificates } from "../api/certificates/api";
 import LimitDropdown from "./components/LimitDropDown";
 import { format } from "date-fns";
@@ -10,6 +10,7 @@ import ViewModal from "./components/ViewModal";
 import EditModal from "./components/EditModal";
 import { getAccessToken } from "../util/jwt";
 import styles from "./styles/certificates.module.css";
+import DeleteModal from "./components/DeleteModal";
 
 const Certificates = () => {
   const [giftCertificates, setGiftCertificates] = useState([]);
@@ -40,7 +41,6 @@ const Certificates = () => {
   const [limit, setLimit] = useState(10);
   const [totalObj, setTotalObj] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [pageButtons, setButtons] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
 
   const fetchCertificates = async (page, limit) => {
@@ -56,7 +56,6 @@ const Certificates = () => {
   useEffect(() => {
     fetchCertificates(0, limit);
     setTotalPages(Math.ceil(totalObj / limit));
-    console.log(totalPages);
     setButtons(Array.from({ length: totalPages }, (_, index) => index));
   }, []);
 
@@ -180,31 +179,33 @@ const Certificates = () => {
           />
         )}
 
-        {/* Delete Modal */}
-        <Modal show={showDeleteModal} onHide={handleCloseDeleteModal}>
-          {/* .. (Delete Modal content) */}
-        </Modal>
-        </div>
+        {showDeleteModal && selectedCertificate && (
+          <DeleteModal
+            certificate={selectedCertificate}
+            handleClose={handleCloseDeleteModal}
+          />
+        )}
+      </div>
 
-        <ReactPaginate
-          previousLabel={"<"}
-          nextLabel={">"}
-          breakLabel={"..."}
-          pageCount={totalPages}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={3}
-          onPageChange={handlePageClick}
-          containerClassName={"pagination justify-content-center"}
-          pageClassName={"page-item"}
-          pageLinkClassName={"page-link"}
-          previousClassName={"page-item"}
-          previousLinkClassName={"page-link"}
-          nextClassName={"page-item"}
-          nextLinkClassName={"page-link"}
-          breakClassName={"page-item"}
-          breakLinkClassName={"page-link"}
-          activeClassName={"active"}
-        />
+      <ReactPaginate
+        previousLabel={"<"}
+        nextLabel={">"}
+        breakLabel={"..."}
+        pageCount={totalPages}
+        marginPagesDisplayed={2}
+        pageRangeDisplayed={3}
+        onPageChange={handlePageClick}
+        containerClassName={"pagination justify-content-center"}
+        pageClassName={"page-item"}
+        pageLinkClassName={"page-link"}
+        previousClassName={"page-item"}
+        previousLinkClassName={"page-link"}
+        nextClassName={"page-item"}
+        nextLinkClassName={"page-link"}
+        breakClassName={"page-item"}
+        breakLinkClassName={"page-link"}
+        activeClassName={"active"}
+      />
     </>
   );
 };
