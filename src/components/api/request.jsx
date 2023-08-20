@@ -19,12 +19,8 @@ const request = async (url, options) => {
 
 const requestWithToken = async (url, options, refreshAttempts = 0) => {
   try {
-      console.log(url);
-      console.log(options);
-
     const response = await fetch(url, options);
     const data = await response.json();
-
 
     if (response.ok) {
       return data;

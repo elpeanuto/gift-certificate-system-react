@@ -24,4 +24,15 @@ const getRefreshedToken = async (jwt) => {
   return requestWithToken(url, options);
 };
 
-export { getToken, getRefreshedToken };
+const isAdmin = async (jwt) => {
+  const url = "gift-certificate-system/auth/isAdmin";
+  const options = {
+    headers: {
+      authorization: `Bearer ${jwt}`,
+    },
+  };
+
+  return requestWithToken(url, options);
+};
+
+export { getToken, getRefreshedToken, isAdmin };

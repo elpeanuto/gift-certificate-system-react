@@ -7,19 +7,11 @@ import Footer from "./components/Footer";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
-
   return (
     <>
       <Header />
       <Routes>
-        <Route
-          path="/certificates"
-          element={
-            <PrivateRoute>
-              <Certificates />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/certificates" element={<PrivateRoute><Certificates /></PrivateRoute>} />
         <Route path="/login" element={<Login />} />
       </Routes>
       <Footer />

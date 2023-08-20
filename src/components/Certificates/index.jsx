@@ -14,7 +14,6 @@ import EditModal from "./components/EditModal";
 import { getAccessToken } from "../util/jwt";
 import styles from "./styles/certificates.module.css";
 import DeleteModal from "./components/DeleteModal";
-import queryString from "query-string";
 
 const Certificates = () => {
   const [giftCertificates, setGiftCertificates] = useState([]);

@@ -34,7 +34,6 @@ const getRefreshToken = () => {
 };
 
 const refreshToken = async () => {
-  console.log("refresh");
   setToken(await getRefreshedToken(getRefreshToken()));
 };
 
