@@ -18,10 +18,10 @@ const Certificates = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState(null);
-
-  const handleCloseViewModal = () => setShowViewModal(false);
-  const handleCloseEditModal = () => setShowEditModal(false);
-  const handleCloseDeleteModal = () => setShowDeleteModal(false);
+  const [limit, setLimit] = useState(10);
+  const [totalObj, setTotalObj] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
 
   const handleShowViewModal = (certificate) => {
     setSelectedCertificate(certificate);
@@ -38,11 +38,6 @@ const Certificates = () => {
     setShowDeleteModal(true);
   };
 
-  const [limit, setLimit] = useState(10);
-  const [totalObj, setTotalObj] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-
   const fetchCertificates = async (page, limit) => {
     try {
       const data = await getCertificates(page, limit, getAccessToken());
@@ -56,21 +51,16 @@ const Certificates = () => {
   useEffect(() => {
     fetchCertificates(0, limit);
     setTotalPages(Math.ceil(totalObj / limit));
-    setButtons(Array.from({ length: totalPages }, (_, index) => index));
   }, []);
 
   useEffect(() => {
     setCurrentPage(0);
     fetchCertificates(0, limit);
     setTotalPages(Math.ceil(totalObj / limit));
-    console.log(totalPages);
-    setButtons(Array.from({ length: totalPages }, (_, index) => index));
   }, [limit, totalObj, totalPages]);
 
   useEffect(() => {
     fetchCertificates(currentPage, limit);
-    console.log(totalPages);
-    setButtons(Array.from({ length: totalPages }, (_, index) => index));
   }, [currentPage]);
 
   const handlePageClick = (data) => {
@@ -168,21 +158,21 @@ const Certificates = () => {
         {showViewModal && selectedCertificate && (
           <ViewModal
             certificate={selectedCertificate}
-            handleClose={handleCloseViewModal}
+            handleClose={() => setShowViewModal(false)}
           />
         )}
 
         {showEditModal && selectedCertificate && (
           <EditModal
             certificate={selectedCertificate}
-            handleClose={handleCloseEditModal}
+            handleClose={() => setShowEditModal(false)}
           />
         )}
 
         {showDeleteModal && selectedCertificate && (
           <DeleteModal
             certificate={selectedCertificate}
-            handleClose={handleCloseDeleteModal}
+            handleClose={() => setShowDeleteModal(false)}
           />
         )}
       </div>
