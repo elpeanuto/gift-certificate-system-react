@@ -14,6 +14,8 @@ import { getAccessToken } from "../util/jwt";
 import styles from "./styles/certificates.module.css";
 import DeleteModal from "./components/DeleteModal";
 import { Helmet, HelmetProvider } from "react-helmet-async";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSortUp, faSortDown } from "@fortawesome/free-solid-svg-icons";
 
 const Certificates = () => {
   const [giftCertificates, setGiftCertificates] = useState([]);
@@ -22,9 +24,10 @@ const Certificates = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [limit, setLimit] = useState(10);
-  const [totalObj, setTotalObj] = useState(0);
+  const [, setTotalObj] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const [sortOrder, setSortOrder] = useState("DESC");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchDone, setSearchDone] = useState("");
   const [error, setError] = useState(false);
@@ -79,7 +82,8 @@ const Certificates = () => {
       const data = await getCertificatesWithFilter(
         urlWithParams,
         currentPage,
-        limit
+        limit,
+        sortOrder
       );
 
       setGiftCertificates(data.giftCertificates.content);
@@ -107,9 +111,13 @@ const Certificates = () => {
   };
 
   useEffect(() => {
-    if (!searchDone) fetchCertificates(currentPage, limit);
-    else handleSearch();
-  }, [currentPage, limit]);
+    handleSearch();
+  }, [currentPage, limit, sortOrder]);
+
+  const handleSortToggle = () => {
+    const newSortOrder = sortOrder === "DESC" ? "ASC" : "DESC";
+    setSortOrder(newSortOrder);
+  };
 
   return (
     <>
@@ -165,7 +173,22 @@ const Certificates = () => {
                   <th>Description</th>
                   <th>Price</th>
                   <th>Duration</th>
-                  <th>Create Date</th>
+                  <th
+                    onClick={handleSortToggle}
+                    style={{
+                      display: "flex",
+                    }}
+                  >
+                    <span style={{ marginRight: "5px" }}>Create Date</span>
+                    <div>
+                      {sortOrder === "ASC" ? (
+                        <FontAwesomeIcon icon={faSortUp} />
+                      ) : (
+                        <FontAwesomeIcon icon={faSortDown} />
+                      )}
+                    </div>
+                  </th>
+
                   <th>Last Update Date</th>
                   <th>Tags</th>
                   <th>Actions</th>
@@ -176,7 +199,16 @@ const Certificates = () => {
                   <tr key={certificate.id}>
                     <td>{certificate.id}</td>
                     <td>{certificate.name}</td>
-                    <td style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{certificate.description}</td>
+                    <td
+                      style={{
+                        maxWidth: "200px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {certificate.description}
+                    </td>
                     <td>${certificate.price.toFixed(2)}</td>
                     <td>{certificate.duration}</td>
                     <td>

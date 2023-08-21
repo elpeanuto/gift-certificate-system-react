@@ -6,8 +6,10 @@ const getCertificates = async (page, limit) => {
   return request(url, null);
 };
 
-const getCertificatesWithFilter = async (url, page, limit) => {
-  const updatedUrl = `${url}&page=${page}&limit=${limit}`;
+const getCertificatesWithFilter = async (url, page, limit, sortOrder) => {
+  const updatedUrl = `${url}&page=${page}&limit=${limit}&sortOrder=${sortOrder}`;
+
+  console.log(updatedUrl);
 
   return request(updatedUrl, null);
 };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Modal, Form, Col, Badge, Alert } from "react-bootstrap";
+import { Button, Modal, Form, Badge, Alert } from "react-bootstrap";
 import styles from "../styles/header.module.css";
 import { addCertificate } from "../../api/certificates/api";
 import { getAccessToken } from "../../util/jwt";
@@ -35,7 +35,7 @@ const AddNew = () => {
       tags: formattedTags,
     };
 
-    const isSuccess = await addCertificate(newProduct, getAccessToken());
+    const isSuccess = addCertificate(newProduct, getAccessToken());
 
     if (isSuccess) {
       handleClose();

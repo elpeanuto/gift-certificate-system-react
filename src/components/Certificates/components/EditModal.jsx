@@ -46,7 +46,7 @@ const EditModal = ({ certificate, handleClose }) => {
       (link) => link.rel === "update"
     ).href;
 
-    const isSuccess = await updateCertificate(
+    const isSuccess = updateCertificate(
       newProduct,
       updateLink,
       getAccessToken()
