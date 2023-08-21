@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { updateCertificate } from "../../api/certificates/api";
+import { addCertificate } from "../../api/certificates/api";
 import { getAccessToken } from "../../util/jwt";
 import { validateForm } from "./util/formUtil";
 import CertificateForm from "./CertificateForm";
 
-const EditModal = ({ certificate, handleClose }) => {
+const AddNew = ({ certificate, handleClose }) => {
   const [name, setName] = useState(certificate.name);
   const [description, setDescription] = useState(certificate.description);
   const [price, setPrice] = useState(certificate.price);
@@ -39,14 +39,8 @@ const EditModal = ({ certificate, handleClose }) => {
       tags: formattedTags,
     };
 
-    const updateLink = certificate.links.find(
-      (link) => link.rel === "update"
-    ).href;
-
     try {
-      await Promise.all([
-        updateCertificate(newProduct, updateLink, getAccessToken()),
-      ]);
+      await Promise.all([addCertificate(newProduct, getAccessToken())]);
       handleClose();
       window.location.reload();
     } catch (error) {
@@ -56,7 +50,7 @@ const EditModal = ({ certificate, handleClose }) => {
 
   return (
     <CertificateForm
-      title={`Edit Certificate with id = ${certificate.id}`}
+      title={"Add new Certificate"}
       certificate={certificate}
       handleClose={handleClose}
       handleSave={handleSave}
@@ -78,4 +72,4 @@ const EditModal = ({ certificate, handleClose }) => {
   );
 };
 
-export default EditModal;
+export default AddNew;
