@@ -7,7 +7,6 @@ const getCertificates = async (page, limit) => {
 };
 
 const getCertificatesWithFilter = async (url, page, limit) => {
-  console.log(url);
   const updatedUrl = `${url}&page=${page}&limit=${limit}`;
 
   return request(updatedUrl, null);

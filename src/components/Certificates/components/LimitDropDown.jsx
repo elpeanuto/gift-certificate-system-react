@@ -7,7 +7,7 @@ const LimitDropdown = ({ limit, setLimit }) => {
       id="limit-dropdown"
       variant="secondary"
       title={`Limit: ${limit}`}
-      style={{ position: "fixed", bottom: "40px", right: "10px" }}
+      style={{ position: "absolute", bottom: "40px", right: "10px" }}
     >
       <Dropdown.Item onClick={() => setLimit(10)}>10</Dropdown.Item>
       <Dropdown.Item onClick={() => setLimit(20)}>20</Dropdown.Item>

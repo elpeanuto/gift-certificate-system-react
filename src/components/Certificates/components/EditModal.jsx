@@ -42,12 +42,11 @@ const EditModal = ({ certificate, handleClose }) => {
         (link) => link.rel === "update"
       ).href;
 
-    console.log(newProduct);
-
     const isSuccess = updateCertificate(newProduct, updateLink, getAccessToken());
 
     if (isSuccess) {
       handleClose();
+      window.location.reload();
     } else {
       setError("An error occurred while adding the certificate.");
     }

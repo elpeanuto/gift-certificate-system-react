@@ -40,4 +40,4 @@ const requestWithToken = async (url, options, refreshAttempts = 0) => {
   }
 };
 
-export {requestWithToken, request};
+export { requestWithToken, request };

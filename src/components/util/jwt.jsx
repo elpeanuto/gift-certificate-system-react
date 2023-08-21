@@ -11,8 +11,6 @@ const getTokenField = (field) => {
 };
 
 const setToken = (jwtObject) => {
-  console.log(jwtObject);
-
   if (jwtObject && jwtObject.accessToken && jwtObject.refreshToken) {
     try {
       const jwtString = JSON.stringify(jwtObject);

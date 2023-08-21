@@ -39,6 +39,7 @@ const AddNew = () => {
 
     if (isSuccess) {
       handleClose();
+      window.location.reload();
     } else {
       setError("An error occurred while adding the certificate.");
     }
@@ -60,22 +61,26 @@ const AddNew = () => {
       return false;
     }
 
-    if (isNaN(parseFloat(price)) || parseFloat(price) <= 0) {
-      setError("Price must be a number greater than 0.");
+    if (!/^\d+(\.\d{1,2})?$/.test(price)) {
+      setError("Price must be a valid number.");
       return false;
     }
 
     if (
-      isNaN(parseInt(duration, 10)) ||
+      !/^\d+$/.test(duration) ||
       (parseInt(duration, 10) !== 0 && parseInt(duration, 10) <= 0)
     ) {
       setError(
-        "Duration must be a number greater than 0, or 0 for infinite certificates."
+        "Duration must be a positive integer or 0 for infinite certificates."
       );
       return false;
     }
 
-    if (newTag.trim() !== "" && (newTag.length < 3 || newTag.length > 15)) {
+    const trimmedTag = newTag.trim();
+    if (
+      trimmedTag !== "" &&
+      (trimmedTag.length < 3 || trimmedTag.length > 15)
+    ) {
       setError("Tag name must be between 3 and 15 characters.");
       return false;
     }
@@ -112,12 +117,12 @@ const AddNew = () => {
   return (
     <>
       <button className={styles.button} onClick={handleShow}>
-        Add new
+        Add new 
       </button>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title className={styles.bold}>Add or Edit</Modal.Title>
+          <Modal.Title className={styles.bold}>Add new Certificate</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
@@ -167,11 +172,18 @@ const AddNew = () => {
                   placeholder="Enter tag"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
+                  style={{ flex: 1 }} 
                 />
-                <Button variant="primary" onClick={addTag} className="ml-2">
+                <Button
+                  variant="primary"
+                  onClick={addTag}
+                  className="ml-2"
+                  style={{ height: "100%", flexShrink: 0 }}
+                >
                   Add Tag
                 </Button>
               </div>
+
               <div className="mt-2">
                 {tags.map((tag, index) => (
                   <Badge
