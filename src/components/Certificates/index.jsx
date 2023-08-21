@@ -16,6 +16,7 @@ import DeleteModal from "./components/DeleteModal";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSortUp, faSortDown } from "@fortawesome/free-solid-svg-icons";
+import { useSearchParams } from "react-router-dom";
 
 const Certificates = () => {
   const [giftCertificates, setGiftCertificates] = useState([]);
@@ -23,14 +24,27 @@ const Certificates = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState(null);
-  const [limit, setLimit] = useState(10);
   const [, setTotalObj] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(0);
-  const [sortOrder, setSortOrder] = useState("DESC");
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchDone, setSearchDone] = useState("");
   const [error, setError] = useState(false);
+
+  const setParams = () => {
+    const limit = parseInt(searchParams.get("limit")) || 10;
+    const currentPage = parseInt(searchParams.get("currentPage")) || 0;
+    const sortOrder = searchParams.get("sortOrder") || "DESC";
+    const searchParam = searchParams.get("searchParam") || "";
+
+    return {
+      limit,
+      currentPage,
+      sortOrder,
+      searchParam,
+    };
+  };
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [params] = useState(setParams());
 
   const handleShowViewModal = (certificate) => {
     setSelectedCertificate(certificate);
@@ -47,8 +61,7 @@ const Certificates = () => {
     setShowDeleteModal(true);
   };
 
-  const handleSearch = async () => {
-    setSearchDone(true);
+  const parseSearchInput = () => {
     const searchQueryParts = searchQuery.split(" ");
     const nonEmptyParts = searchQueryParts.filter((part) => part !== "");
 
@@ -74,32 +87,25 @@ const Certificates = () => {
       queryParams.push(`tags=${tag}`);
     });
 
-    const urlWithParams = `gift-certificate-system/giftCertificates/search?${queryParams.join(
-      "&"
-    )}`;
+    params.searchParam = queryParams.join("&");
+    setSearchParams(params);
+  };
+
+  const handleSearch = async () => {
+    console.log(params.searchParam);
+    const urlWithParams = `gift-certificate-system/giftCertificates/search?${params.searchParam}`;
 
     try {
       const data = await getCertificatesWithFilter(
         urlWithParams,
-        currentPage,
-        limit,
-        sortOrder
+        params.currentPage,
+        params.limit,
+        params.sortOrder
       );
 
       setGiftCertificates(data.giftCertificates.content);
       setTotalObj(data.total);
-      setTotalPages(Math.ceil(data.total / limit));
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
-  const fetchCertificates = async (page, limit) => {
-    try {
-      const data = await getCertificates(page, limit, getAccessToken());
-      setGiftCertificates(data.giftCertificates.content);
-      setTotalObj(data.total);
-      setTotalPages(Math.ceil(data.total / limit));
+      setTotalPages(Math.ceil(data.total / params.limit));
     } catch (error) {
       setError(error.message);
     }
@@ -107,16 +113,23 @@ const Certificates = () => {
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected;
-    setCurrentPage(selectedPage);
+    params.currentPage = selectedPage;
+    setSearchParams(params);
   };
 
   useEffect(() => {
     handleSearch();
-  }, [currentPage, limit, sortOrder]);
+  }, [params.currentPage, params.limit, params.sortOrder, params.searchParam]);
 
   const handleSortToggle = () => {
-    const newSortOrder = sortOrder === "DESC" ? "ASC" : "DESC";
-    setSortOrder(newSortOrder);
+    const newSortOrder = params.sortOrder === "DESC" ? "ASC" : "DESC";
+    params.sortOrder = newSortOrder;
+    setSearchParams(params);
+  };
+
+  const handleLimitChange = (value) => {
+    params.limit = value;
+    setSearchParams(params);
   };
 
   return (
@@ -127,7 +140,7 @@ const Certificates = () => {
             <title>Certificates</title>
           </Helmet>
 
-          <LimitDropdown limit={limit} setLimit={setLimit} />
+          <LimitDropdown limit={params.limit} setLimit={handleLimitChange} />
           <Form.Group
             controlId="searchForm"
             className="mb-2"
@@ -140,7 +153,7 @@ const Certificates = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <Button variant="primary" onClick={handleSearch}>
+              <Button variant="primary" onClick={parseSearchInput}>
                 Search
               </Button>
             </div>
@@ -181,7 +194,7 @@ const Certificates = () => {
                   >
                     <span style={{ marginRight: "5px" }}>Create Date</span>
                     <div>
-                      {sortOrder === "ASC" ? (
+                      {params.sortOrder === "ASC" ? (
                         <FontAwesomeIcon icon={faSortUp} />
                       ) : (
                         <FontAwesomeIcon icon={faSortDown} />
@@ -306,6 +319,7 @@ const Certificates = () => {
           breakClassName={"page-item"}
           breakLinkClassName={"page-link"}
           activeClassName={"active"}
+          initialPage={params.currentPage}
         />
       </HelmetProvider>
     </>
