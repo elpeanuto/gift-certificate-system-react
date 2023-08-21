@@ -9,10 +9,8 @@ const getCertificates = async (page, limit) => {
 const getCertificatesWithFilter = async (url, page, limit, sortOrder) => {
   const updatedUrl = `${url}&page=${page}&limit=${limit}&sortOrder=${sortOrder}`;
 
-  console.log(updatedUrl);
-
   return request(updatedUrl, null);
-};
+}; 
 
 const addCertificate = async (certificate, jwt) => {
   const url = `gift-certificate-system/giftCertificates`;

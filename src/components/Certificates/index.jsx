@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Table from "react-bootstrap/Table";
 import { Button, Col, Row, Form, ButtonGroup, Alert } from "react-bootstrap";
-import {
-  getCertificates,
-  getCertificatesWithFilter,
-} from "../api/certificates/api";
+import { getCertificatesWithFilter } from "../api/certificates/api";
 import LimitDropdown from "./components/LimitDropDown";
 import { format } from "date-fns";
 import ReactPaginate from "react-paginate";
 import ViewModal from "./components/ViewModal";
 import EditModal from "./components/EditModal";
-import { getAccessToken } from "../util/jwt";
 import styles from "./styles/certificates.module.css";
 import DeleteModal from "./components/DeleteModal";
 import { Helmet, HelmetProvider } from "react-helmet-async";
@@ -92,7 +88,6 @@ const Certificates = () => {
   };
 
   const handleSearch = async () => {
-    console.log(params.searchParam);
     const urlWithParams = `gift-certificate-system/giftCertificates/search?${params.searchParam}`;
 
     try {

@@ -16,10 +16,10 @@ const setToken = (jwtObject) => {
       const jwtString = JSON.stringify(jwtObject);
       localStorage.setItem("jwt", jwtString);
     } catch (error) {
-      console.error("Error converting JWT object to string:", error);
+      window.alert("Error converting JWT object to string:", error);
     }
   } else {
-    console.error("Invalid JWT object format");
+    window.alert("Invalid JWT object format");
   }
 };
 

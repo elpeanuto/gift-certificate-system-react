@@ -11,11 +11,11 @@ const DeleteModal = ({ certificate, handleClose }) => {
           (link) => link.rel === "delete"
         ).href;
 
-        deleteCertificate(deleteUrl, getAccessToken());
+        await deleteCertificate(deleteUrl, getAccessToken());
         handleClose();
         window.location.reload();
       } catch (error) {
-        console.error("Error deleting certificate:", error);
+        window.alert("Error deleting certificate:", error);
       }
     }
   };

@@ -3,6 +3,7 @@ import { Button, Modal, Form, Badge, Alert } from "react-bootstrap";
 import styles from "../styles/header.module.css";
 import { addCertificate } from "../../api/certificates/api";
 import { getAccessToken } from "../../util/jwt";
+import { validateForm } from "../../Certificates/components/util/formUtil";
 
 const AddNew = () => {
   const [show, setShow] = useState(false);
@@ -21,72 +22,9 @@ const AddNew = () => {
 
   const handleShow = () => setShow(true);
 
-  const handleSubmit = async () => {
-    if (!validateForm()) {
-      return;
-    }
-
-    const formattedTags = tags.map((tag) => ({ name: tag }));
-    const newProduct = {
-      name,
-      description,
-      price: parseFloat(price),
-      duration: parseInt(duration, 10),
-      tags: formattedTags,
-    };
-
-    const isSuccess = addCertificate(newProduct, getAccessToken());
-
-    if (isSuccess) {
-      handleClose();
-      window.location.reload();
-    } else {
-      setError("An error occurred while adding the certificate.");
-    }
-  };
-
-  const validateForm = () => {
-    if (!name || !description || !price || !duration) {
-      setError("All fields are required.");
-      return false;
-    }
-
-    if (name.length < 6 || name.length > 30) {
-      setError("Title must be between 6 and 30 characters.");
-      return false;
-    }
-
-    if (description.length < 12 || description.length > 1000) {
-      setError("Description must be between 12 and 1000 characters.");
-      return false;
-    }
-
-    if (!/^\d+(\.\d{1,2})?$/.test(price)) {
-      setError("Price must be a valid number.");
-      return false;
-    }
-
-    if (
-      !/^\d+$/.test(duration) ||
-      (parseInt(duration, 10) !== 0 && parseInt(duration, 10) <= 0)
-    ) {
-      setError(
-        "Duration must be a positive integer or 0 for infinite certificates."
-      );
-      return false;
-    }
-
-    const trimmedTag = newTag.trim();
-    if (
-      trimmedTag !== "" &&
-      (trimmedTag.length < 3 || trimmedTag.length > 15)
-    ) {
-      setError("Tag name must be between 3 and 15 characters.");
-      return false;
-    }
-
-    setError("");
-    return true;
+  const removeTag = (tag) => {
+    const updatedTags = tags.filter((t) => t !== tag);
+    setTags(updatedTags);
   };
 
   const addTag = () => {
@@ -99,9 +37,39 @@ const AddNew = () => {
     }
   };
 
-  const removeTag = (tag) => {
-    const updatedTags = tags.filter((t) => t !== tag);
-    setTags(updatedTags);
+  const handleSubmit = async () => {
+    const validationError = validateForm(
+      {
+        name,
+        description,
+        price,
+        duration,
+        tags,
+      },
+      newTag
+    );
+
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
+    const formattedTags = tags.map((tag) => ({ name: tag }));
+    const newProduct = {
+      name,
+      description,
+      price: parseFloat(price),
+      duration: parseInt(duration, 10),
+      tags: formattedTags,
+    };
+
+    try {
+      await Promise.all([addCertificate(newProduct, getAccessToken())]);
+      handleClose();
+      window.location.reload();
+    } catch (error) {
+      setError("An error occurred while adding the certificate.");
+    }
   };
 
   const resetForm = () => {
