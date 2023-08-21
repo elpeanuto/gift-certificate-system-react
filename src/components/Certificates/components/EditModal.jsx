@@ -55,7 +55,7 @@ const EditModal = ({ certificate, handleClose }) => {
   return (
     <Modal show={true} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Edit Certificate</Modal.Title>
+        <Modal.Title>Edit Certificate with id = {certificate.id}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         {error && <Alert variant="danger">{error}</Alert>}
@@ -100,16 +100,22 @@ const EditModal = ({ certificate, handleClose }) => {
           <Form.Group controlId="formTags" className="mb-2">
             <Form.Label className={styles.bold}>Tags:</Form.Label>
             <div className="d-flex align-items-center">
-              <Form.Control
-                type="text"
-                placeholder="Enter tag"
-                value={newTag}
-                onChange={(e) => setNewTag(e.target.value)}
-              />
-              <Button variant="primary" onClick={addTag} className="ml-2">
-                Add Tag
-              </Button>
-            </div>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter tag"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  style={{ flex: 1 }} 
+                />
+                <Button
+                  variant="primary"
+                  onClick={addTag}
+                  className="ml-2"
+                  style={{ height: "100%", flexShrink: 0 }}
+                >
+                  Add Tag
+                </Button>
+              </div>
             <div className="mt-2">
               {tags.map((tag, index) => (
                 <Badge
