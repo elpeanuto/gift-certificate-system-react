@@ -21,7 +21,7 @@ const AddNew = () => {
 
   const handleShow = () => setShow(true);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!validateForm()) {
       return;
     }
@@ -35,7 +35,7 @@ const AddNew = () => {
       tags: formattedTags,
     };
 
-    const isSuccess = addCertificate(newProduct, getAccessToken());
+    const isSuccess = await addCertificate(newProduct, getAccessToken());
 
     if (isSuccess) {
       handleClose();
@@ -117,7 +117,7 @@ const AddNew = () => {
   return (
     <>
       <button className={styles.button} onClick={handleShow}>
-        Add new 
+        Add new
       </button>
 
       <Modal show={show} onHide={handleClose}>
@@ -172,7 +172,7 @@ const AddNew = () => {
                   placeholder="Enter tag"
                   value={newTag}
                   onChange={(e) => setNewTag(e.target.value)}
-                  style={{ flex: 1 }} 
+                  style={{ flex: 1 }}
                 />
                 <Button
                   variant="primary"

@@ -28,7 +28,11 @@ const EditModal = ({ certificate, handleClose }) => {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!validateForm()) {
+      return;
+    }
+
     const formattedTags = tags.map((tag) => ({ name: tag }));
     const newProduct = {
       name,
@@ -39,10 +43,14 @@ const EditModal = ({ certificate, handleClose }) => {
     };
 
     const updateLink = certificate.links.find(
-        (link) => link.rel === "update"
-      ).href;
+      (link) => link.rel === "update"
+    ).href;
 
-    const isSuccess = updateCertificate(newProduct, updateLink, getAccessToken());
+    const isSuccess = await updateCertificate(
+      newProduct,
+      updateLink,
+      getAccessToken()
+    );
 
     if (isSuccess) {
       handleClose();
@@ -50,6 +58,50 @@ const EditModal = ({ certificate, handleClose }) => {
     } else {
       setError("An error occurred while adding the certificate.");
     }
+  };
+
+  const validateForm = () => {
+    if (!name || !description || !price || !duration) {
+      setError("All fields are required.");
+      return false;
+    }
+
+    if (name.length < 6 || name.length > 30) {
+      setError("Title must be between 6 and 30 characters.");
+      return false;
+    }
+
+    if (description.length < 12 || description.length > 1000) {
+      setError("Description must be between 12 and 1000 characters.");
+      return false;
+    }
+
+    if (!/^\d+(\.\d{1,2})?$/.test(price)) {
+      setError("Price must be a valid number.");
+      return false;
+    }
+
+    if (
+      !/^\d+$/.test(duration) ||
+      (parseInt(duration, 10) !== 0 && parseInt(duration, 10) <= 0)
+    ) {
+      setError(
+        "Duration must be a positive integer or 0 for infinite certificates."
+      );
+      return false;
+    }
+
+    const trimmedTag = newTag.trim();
+    if (
+      trimmedTag !== "" &&
+      (trimmedTag.length < 3 || trimmedTag.length > 15)
+    ) {
+      setError("Tag name must be between 3 and 15 characters.");
+      return false;
+    }
+
+    setError("");
+    return true;
   };
 
   return (
@@ -74,7 +126,7 @@ const EditModal = ({ certificate, handleClose }) => {
             <Form.Control
               as="textarea"
               placeholder="Enter description"
-              value={certificate.description}
+              value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={5}
             />
@@ -100,22 +152,22 @@ const EditModal = ({ certificate, handleClose }) => {
           <Form.Group controlId="formTags" className="mb-2">
             <Form.Label className={styles.bold}>Tags:</Form.Label>
             <div className="d-flex align-items-center">
-                <Form.Control
-                  type="text"
-                  placeholder="Enter tag"
-                  value={newTag}
-                  onChange={(e) => setNewTag(e.target.value)}
-                  style={{ flex: 1 }} 
-                />
-                <Button
-                  variant="primary"
-                  onClick={addTag}
-                  className="ml-2"
-                  style={{ height: "100%", flexShrink: 0 }}
-                >
-                  Add Tag
-                </Button>
-              </div>
+              <Form.Control
+                type="text"
+                placeholder="Enter tag"
+                value={newTag}
+                onChange={(e) => setNewTag(e.target.value)}
+                style={{ flex: 1 }}
+              />
+              <Button
+                variant="primary"
+                onClick={addTag}
+                className="ml-2"
+                style={{ height: "100%", flexShrink: 0 }}
+              >
+                Add Tag
+              </Button>
+            </div>
             <div className="mt-2">
               {tags.map((tag, index) => (
                 <Badge

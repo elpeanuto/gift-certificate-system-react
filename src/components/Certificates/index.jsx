@@ -176,7 +176,7 @@ const Certificates = () => {
                   <tr key={certificate.id}>
                     <td>{certificate.id}</td>
                     <td>{certificate.name}</td>
-                    <td>{certificate.description}</td>
+                    <td style={{ maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{certificate.description}</td>
                     <td>${certificate.price.toFixed(2)}</td>
                     <td>{certificate.duration}</td>
                     <td>

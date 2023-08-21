@@ -7,7 +7,7 @@ const ViewModal = ({ certificate, handleClose }) => {
       <Modal.Header closeButton>
         <Modal.Title>View Certificate</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body style={{ overflowWrap: "break-word", wordWrap: "break-word" }}>
         <p>
           <strong>Name:</strong> {certificate.name}
         </p>
