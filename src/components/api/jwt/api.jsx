@@ -1,7 +1,7 @@
 import { request, requestWithToken } from "../request";
 
 const getToken = async (body) => {
-  const url = "gift-certificate-system/auth/authenticate";
+  const url = "auth/authenticate";
   const options = {
     headers: {
       "Content-Type": "application/json",
@@ -14,7 +14,7 @@ const getToken = async (body) => {
 };
 
 const getRefreshedToken = async (jwt) => {
-  const url = "gift-certificate-system/auth/refreshToken";
+  const url = "auth/refreshToken";
   const options = {
     headers: {
       authorization: `Bearer ${jwt}`,
@@ -25,7 +25,7 @@ const getRefreshedToken = async (jwt) => {
 };
 
 const isAdmin = async (jwt) => {
-  const url = "gift-certificate-system/auth/isAdmin";
+  const url = "auth/isAdmin";
   const options = {
     headers: {
       authorization: `Bearer ${jwt}`,

@@ -95,7 +95,7 @@ const Certificates = () => {
 
   useEffect(() => {
     const handleSearch = async () => {
-      const urlWithParams = `gift-certificate-system/giftCertificates/search?${params.searchParam}`;
+      const urlWithParams = `giftCertificates/search?${params.searchParam}`;
   
       try {
         const data = await getCertificatesWithFilter(

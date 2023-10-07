@@ -13,7 +13,7 @@ const getCertificatesWithFilter = async (url, page, limit, sortOrder) => {
 }; 
 
 const addCertificate = async (certificate, jwt) => {
-  const url = `gift-certificate-system/giftCertificates`;
+  const url = `giftCertificates`;
   const options = {
     method: "POST",
     headers: {
@@ -31,7 +31,7 @@ const addCertificate = async (certificate, jwt) => {
 };
 
 const deleteCertificate = async (deleteLink, jwt) => {
-  const modifiedDeleteUrl = deleteLink.replace("http://localhost:8080/", "");
+  const modifiedDeleteUrl = deleteLink.replace(/^(.*?\/){3}/, "");
 
   const options = {
     method: "DELETE",
@@ -50,7 +50,7 @@ const deleteCertificate = async (deleteLink, jwt) => {
 };
 
 const updateCertificate = async (certificate, updateLink, jwt) => {
-  const modifiedUpdateLink = updateLink.replace("http://localhost:8080/", "");
+  const modifiedUpdateLink = updateLink.replace(/^(.*?\/){3}/, "");
   const options = {
     method: "PATCH",
     headers: {
