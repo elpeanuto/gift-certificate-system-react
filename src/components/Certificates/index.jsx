@@ -87,25 +87,6 @@ const Certificates = () => {
     setSearchParams(params);
   };
 
-  const handleSearch = async () => {
-    const urlWithParams = `gift-certificate-system/giftCertificates/search?${params.searchParam}`;
-
-    try {
-      const data = await getCertificatesWithFilter(
-        urlWithParams,
-        params.currentPage,
-        params.limit,
-        params.sortOrder
-      );
-
-      setGiftCertificates(data.giftCertificates.content);
-      setTotalObj(data.total);
-      setTotalPages(Math.ceil(data.total / params.limit));
-    } catch (error) {
-      setError(error.message);
-    }
-  };
-
   const handlePageClick = (data) => {
     const selectedPage = data.selected;
     params.currentPage = selectedPage;
@@ -113,6 +94,25 @@ const Certificates = () => {
   };
 
   useEffect(() => {
+    const handleSearch = async () => {
+      const urlWithParams = `gift-certificate-system/giftCertificates/search?${params.searchParam}`;
+  
+      try {
+        const data = await getCertificatesWithFilter(
+          urlWithParams,
+          params.currentPage,
+          params.limit,
+          params.sortOrder
+        );
+  
+        setGiftCertificates(data.giftCertificates.content);
+        setTotalObj(data.total);
+        setTotalPages(Math.ceil(data.total / params.limit));
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
     handleSearch();
   }, [params.currentPage, params.limit, params.sortOrder, params.searchParam]);
 
