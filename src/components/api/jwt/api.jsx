@@ -13,15 +13,22 @@ const getToken = async (body) => {
   return request(url, options);
 };
 
-const getRefreshedToken = async (jwt) => {
+const getRefreshedToken = async (refreshToken) => {
   const url = "auth/refreshToken";
   const options = {
     headers: {
-      authorization: `Bearer ${jwt}`,
+      authorization: `Bearer ${refreshToken}`,
     },
   };
 
-  return requestWithToken(url, options);
+  const response = await fetch(url, options);
+  const data = await response.json();
+
+  if (response.ok) {
+    return data.token;
+  } else {
+    throw new Error("Error during token refresh: " + data.errorMessage);
+  }
 };
 
 const isAdmin = async (jwt) => {

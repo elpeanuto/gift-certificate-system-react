@@ -13,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/certificates" element={<PrivateRoute><Certificates /></PrivateRoute>} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
       </Routes>
       <Footer />
     </>

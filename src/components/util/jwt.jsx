@@ -5,9 +5,9 @@ const getTokenField = (field) => {
 
   if (jwt) {
     return JSON.parse(jwt)[field];
+  } else {
+    return null;
   }
-
-  throw new Error("Jwt is missing");
 };
 
 const setToken = (jwtObject) => {
@@ -23,6 +23,10 @@ const setToken = (jwtObject) => {
   }
 };
 
+const deleteToken = () => {
+  localStorage.removeItem("jwt");
+}
+
 const getAccessToken = () => {
   return getTokenField("accessToken");
 };
@@ -32,7 +36,10 @@ const getRefreshToken = () => {
 };
 
 const refreshToken = async () => {
-  setToken(await getRefreshedToken(getRefreshToken()));
+  const refreshToken = getRefreshToken();
+
+  if (refreshToken)
+    setToken(getRefreshedToken(refreshToken));
 };
 
-export { getAccessToken, getRefreshToken, setToken, refreshToken };
+export { getAccessToken, getRefreshToken, setToken, refreshToken, deleteToken };

@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import styles from "./styles/header.module.css";
 import AddNew from "../Certificates/components/AddNew";
 import jwt_decode from "jwt-decode";
-import { getAccessToken, setToken } from "../util/jwt";
+import { getAccessToken, deleteToken } from "../util/jwt";
 
 const Header = () => {
   const location = useLocation();
@@ -18,9 +18,12 @@ const Header = () => {
   useEffect(() => {
     if (showButtons) {
       const token = getAccessToken();
-      const decoded = jwt_decode(token);
-      setEmail(decoded.sub);
-    }
+      if(token) {
+        const decoded =  jwt_decode(token);
+        setEmail(decoded.sub);
+        
+      }
+      }
   }, [showButtons]);
 
   return (
@@ -39,7 +42,7 @@ const Header = () => {
             <button
               className={styles.button}
               onClick={() => {
-                setToken(null);
+                deleteToken();
                 window.location.href = "login";
               }}
             >

@@ -28,7 +28,7 @@ const requestWithToken = async (url, options, refreshAttempts = 0) => {
       if (refreshAttempts < MAX_REFRESH_ATTEMPTS) {
         await refreshToken();
         options.headers.authorization = `Bearer ${getAccessToken()}`;
-        return request(url, options, refreshAttempts + 1);
+        return requestWithToken(url, options, refreshAttempts + 1);
       } else {
         throw new Error("Maximum token refresh attempts reached.");
       }

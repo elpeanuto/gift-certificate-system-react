@@ -1,34 +1,33 @@
-import React, { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import  { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAccessToken } from "../util/jwt";
 import { isAdmin } from "../api/jwt/api";
 
 const PrivateRoute = ({ children }) => {
   const jwt = getAccessToken();
-  const [isAdminUser, setIsAdminUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    async function checkAdminStatus() {
-      try {
-        const response = await isAdmin(jwt);
-        setIsAdminUser(response);
-      } catch (error) {
-        setIsAdminUser(false);
+    if (!jwt) {
+      navigate("/login");
+    } else {
+      async function checkAdminStatus() {
+        try {
+          const response = await isAdmin(jwt);
+          if (!response) {
+            navigate("/login");
+          }
+        } catch (error) {
+          console.error(error);
+          navigate("/login");
+        }
       }
+  
+      checkAdminStatus();
     }
-
-    checkAdminStatus();
-  }, [jwt]);
-
-  if (isAdminUser === null) {
-    return null;
-  }
-
-  if (isAdminUser) {
-    return children;
-  } else {
-    return <Navigate to="/login" />;
-  }
+  }, [jwt, navigate]);
+  
+  return children;
 };
 
 export default PrivateRoute;
