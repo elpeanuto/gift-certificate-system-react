@@ -21,7 +21,7 @@ const Certificates = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [, setTotalObj] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);  
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState(false);
 

@@ -1,32 +1,37 @@
-import  { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 import { getAccessToken } from "../util/jwt";
 import { isAdmin } from "../api/jwt/api";
 
 const PrivateRoute = ({ children }) => {
+  const [isAdminCheckCompleted, setIsAdminCheckCompleted] = useState(false);
   const jwt = getAccessToken();
-  const navigate = useNavigate();
 
   useEffect(() => {
     if (!jwt) {
-      navigate("/login");
+      window.location.href = "/login";
     } else {
       async function checkAdminStatus() {
         try {
           const response = await isAdmin(jwt);
           if (!response) {
-            navigate("/login");
+            window.location.href = "/login";
           }
+          setIsAdminCheckCompleted(true);
         } catch (error) {
           console.error(error);
-          navigate("/login");
+          window.location.href = "/login";
+          setIsAdminCheckCompleted(true); 
         }
       }
-  
+
       checkAdminStatus();
     }
-  }, [jwt, navigate]);
-  
+  }, [jwt]);
+
+  if (!isAdminCheckCompleted) {
+    return null;
+  }
+
   return children;
 };
 

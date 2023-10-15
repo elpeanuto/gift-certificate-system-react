@@ -18,12 +18,11 @@ const Header = () => {
   useEffect(() => {
     if (showButtons) {
       const token = getAccessToken();
-      if(token) {
-        const decoded =  jwt_decode(token);
+      if (token) {
+        const decoded = jwt_decode(token);
         setEmail(decoded.sub);
-        
       }
-      }
+    }
   }, [showButtons]);
 
   return (

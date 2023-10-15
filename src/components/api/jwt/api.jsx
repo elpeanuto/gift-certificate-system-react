@@ -18,6 +18,7 @@ const getRefreshedToken = async (refreshToken) => {
   const options = {
     headers: {
       authorization: `Bearer ${refreshToken}`,
+      method:"POST"
     },
   };
 
@@ -25,7 +26,7 @@ const getRefreshedToken = async (refreshToken) => {
   const data = await response.json();
 
   if (response.ok) {
-    return data.token;
+    return data;
   } else {
     throw new Error("Error during token refresh: " + data.errorMessage);
   }

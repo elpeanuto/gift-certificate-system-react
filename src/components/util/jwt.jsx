@@ -25,7 +25,7 @@ const setToken = (jwtObject) => {
 
 const deleteToken = () => {
   localStorage.removeItem("jwt");
-}
+};
 
 const getAccessToken = () => {
   return getTokenField("accessToken");
@@ -38,8 +38,11 @@ const getRefreshToken = () => {
 const refreshToken = async () => {
   const refreshToken = getRefreshToken();
 
-  if (refreshToken)
-    setToken(getRefreshedToken(refreshToken));
+  if (refreshToken) {
+    const newToken = await getRefreshedToken(refreshToken);
+
+    setToken(newToken);
+  }
 };
 
 export { getAccessToken, getRefreshToken, setToken, refreshToken, deleteToken };

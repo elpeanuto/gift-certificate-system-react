@@ -38,7 +38,7 @@ const Login = () => {
 
         window.location.href = "/certificates";
       } catch (error) {
-        setError(error.message);
+        setError("Wrong email or password");
       }
     },
   });
